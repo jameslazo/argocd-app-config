@@ -4,20 +4,20 @@ metadata:
   name: myapp-argo-application
   namespace: argocd
 spec:
-  project: default
+  project: default # can group apps into app projects, else default
   
   source:
     repoURL: https://github.com/jameslazo/argocd-app-config.git
     targetRevision: HEAD
     path: dev # staging, prod, etc.
   destination: 
-    server: https://kubernetes.default.svc
-    namespace: myapp
+    server: https://kubernetes.default.svc # can point to external cluster url
+    namespace: myapp # CreateNamespace=true syncOption under syncPolicy attribute required to create new namespace if it doesn't exist
 
   syncPolicy:
     syncOptions:
     - CreateNamespace=true
 
     automated:
-      selfHeal: true
-      prune: true
+      selfHeal: true # drift control for changes applied directly to cluster outside of ArgoCD - polls in 3 min intervals, can configure Git webhook for syncronous updates
+      prune: true # cleanup undefined resources
